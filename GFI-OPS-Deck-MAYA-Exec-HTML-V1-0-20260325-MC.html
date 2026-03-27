@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The MAYA Principle — Executive Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#84BB41;--green-d:#6a9a33;--green-l:#b4d87a;
+  --blue:#2F3D50;--blue-d:#1e2a38;--blue-m:#3d5068;
+  --orange:#F57F20;--yellow:#FFB206;
+  --offwhite:#FFF7E3;--altwhite:#FFFAEF;
+  --nearblack:#22191B;--muted:#64748b;
+  --border:rgba(47,61,80,0.12);
+  --r-xl:2rem;--r-lg:1.25rem;
+  --spring:cubic-bezier(0.32,0.72,0,1);
+  --out:cubic-bezier(0.16,1,0.3,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--offwhite);color:var(--nearblack);overflow-x:hidden}
+
+/* SLIDE SYSTEM */
+.deck{width:100%}
+.slide{min-height:100dvh;width:100%;display:none;flex-direction:column;position:relative;overflow:hidden}
+.slide.active{display:flex}
+
+/* NAV PILL */
+.nav-pill{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:.5rem;
+  background:rgba(47,61,80,0.93);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:9999px;
+  padding:.6rem 1.2rem;z-index:100;
+  box-shadow:0 20px 60px -10px rgba(0,0,0,0.35)
+}
+.nav-btn{width:2.2rem;height:2.2rem;border-radius:9999px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;transition:all .35s var(--spring)}
+.nav-btn.prev{background:rgba(255,255,255,0.1);color:#fff}
+.nav-btn.next{background:var(--green);color:#fff}
+.nav-btn:hover{transform:scale(1.08)}
+.nav-btn:active{transform:scale(0.95)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.nav-counter{font-size:.72rem;font-weight:700;color:rgba(255,255,255,0.5);min-width:3rem;text-align:center;letter-spacing:.05em}
+.dots{display:flex;gap:.35rem;align-items:center}
+.dot{width:6px;height:6px;border-radius:9999px;background:rgba(255,255,255,0.25);transition:all .4s var(--spring)}
+.dot.active{background:var(--green);width:18px}
+
+/* SHARED COMPONENTS */
+.eyebrow{display:inline-flex;align-items:center;gap:.4rem;background:rgba(132,187,65,0.12);border:1px solid rgba(132,187,65,0.25);border-radius:9999px;padding:.3rem .85rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--green-d);margin-bottom:1.25rem}
+.eyebrow.light{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:var(--green-l)}
+.orb{position:absolute;border-radius:9999px;filter:blur(100px);pointer-events:none}
+
+/* FADE-UP ANIMATION */
+.fu{opacity:0;transform:translateY(24px);transition:opacity .7s var(--out),transform .7s var(--out)}
+.fu.show{opacity:1;transform:translateY(0)}
+.fu.d1{transition-delay:.1s}.fu.d2{transition-delay:.2s}.fu.d3{transition-delay:.3s}
+.fu.d4{transition-delay:.4s}.fu.d5{transition-delay:.5s}.fu.d6{transition-delay:.6s}
+
+/* ── S1 TITLE ── */
+#s1{background:var(--blue-d);padding:5rem 5vw 8rem;justify-content:center;align-items:flex-start}
+.s1-bar{position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(to bottom,var(--green),var(--orange))}
+.s1-orb1{width:520px;height:520px;background:rgba(132,187,65,0.15);top:-120px;right:-80px}
+.s1-orb2{width:300px;height:300px;background:rgba(245,127,32,0.1);bottom:-60px;left:-60px}
+.s1-label{font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:1.5rem}
+.s1-title{font-family:'Outfit',sans-serif;font-size:clamp(2.6rem,6vw,5.5rem);font-weight:800;line-height:1;letter-spacing:-.03em;color:#fff;margin-bottom:1rem;white-space:nowrap}
+.s1-title span{color:var(--green)}
+.s1-sub{font-size:clamp(.9rem,1.6vw,1.2rem);color:rgba(255,255,255,0.5);line-height:1.5;margin-bottom:2.5rem;white-space:nowrap}
+.s1-credit{position:absolute;bottom:5.5rem;left:5vw;font-size:.72rem;color:rgba(255,255,255,0.25);z-index:2}
+
+/* ── S2 WHY NOW ── */
+#s2{background:var(--altwhite);padding:4rem 5vw 7rem;justify-content:center}
+.s2-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem 3.5rem;width:100%}
+.s2-left{grid-column:1;grid-row:1}
+.s2-right{grid-column:2;grid-row:1}
+.s2-drivers-row{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.s2-title{font-family:'Outfit',sans-serif;font-size:clamp(1.6rem,3.2vw,2.8rem);font-weight:800;line-height:1.1;letter-spacing:-.025em;color:var(--blue);margin-bottom:.75rem;white-space:nowrap}
+.s2-title .accent{color:var(--orange)}
+.s2-sub-headline{font-size:.95rem;font-weight:600;color:var(--blue-m);margin-bottom:.75rem;line-height:1.5}
+.s2-body{font-size:.9rem;line-height:1.7;color:var(--muted);max-width:52ch}
+.driver{display:flex;align-items:flex-start;gap:.75rem;padding:.9rem 1rem;background:#fff;border-radius:.85rem;border:1px solid var(--border);box-shadow:0 2px 12px rgba(47,61,80,0.05);transition:transform .3s var(--spring)}
+.driver:hover{transform:translateX(4px)}
+.driver-icon{width:2.2rem;height:2.2rem;border-radius:.6rem;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;flex-shrink:0}
+.ic-g{background:rgba(132,187,65,0.15);color:var(--green-d)}
+.ic-o{background:rgba(245,127,32,0.12);color:var(--orange)}
+.ic-b{background:rgba(47,61,80,0.1);color:var(--blue)}
+.driver-text strong{display:block;font-size:.82rem;font-weight:700;color:var(--blue);margin-bottom:.15rem}
+.driver-text span{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+/* MAYA DEF CARD */
+.def-card{background:var(--blue);border-radius:var(--r-xl);padding:2.2rem 2rem;position:relative;overflow:hidden;box-shadow:0 30px 80px -20px rgba(47,61,80,0.4)}
+.def-orb{position:absolute;width:200px;height:200px;border-radius:9999px;filter:blur(60px);background:rgba(132,187,65,0.2);top:-40px;right:-40px;pointer-events:none}
+.def-warning{background:rgba(245,127,32,0.15);border:1px solid rgba(245,127,32,0.3);border-radius:.75rem;padding:.7rem 1rem;margin-bottom:1.2rem}
+.def-warning p{font-size:.78rem;color:rgba(255,255,255,0.8);line-height:1.55}
+.def-warning strong{color:var(--orange)}
+.acronym-row{display:flex;align-items:baseline;gap:2.5rem;flex-wrap:nowrap;margin-bottom:1.2rem}
+.al{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--green);line-height:1}
+.ar{font-size:1rem;font-weight:600;color:rgba(255,255,255,0.8)}
+.def-divider{height:1px;background:rgba(255,255,255,0.1);margin:.9rem 0}
+.def-stmt{font-size:.88rem;line-height:1.65;color:rgba(255,255,255,0.65)}
+.def-stmt strong{color:var(--green-l);font-weight:600}
+
+/* ── S3 ENGAGE ── */
+#s3{background:var(--blue);padding:4rem 5vw 7rem;justify-content:center;align-items:flex-start}
+.s3-orb1{width:600px;height:600px;background:rgba(132,187,65,0.1);top:-100px;left:-100px}
+.s3-orb2{width:350px;height:350px;background:rgba(245,127,32,0.09);bottom:-60px;right:-60px}
+.s3-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3rem 5vw;align-items:start;width:100%;position:relative;z-index:2}
+.s3-title{font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.4rem);font-weight:800;line-height:1.2;color:#fff;margin-bottom:1rem;letter-spacing:-.02em}
+.s3-title span{color:var(--green)}
+.s3-body{font-size:.95rem;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:1.5rem}
+.s3-reveal-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r-lg);padding:1.2rem 1.4rem;margin-bottom:1rem}
+.s3-reveal-card p{font-size:.88rem;color:rgba(255,255,255,0.75);line-height:1.6;font-style:italic}
+.s3-reveal-card strong{color:var(--green-l);font-style:normal}
+.tags{display:flex;flex-wrap:wrap;gap:.5rem;padding-top:2.6rem}
+.tag{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:9999px;padding:.45rem .9rem;font-size:.8rem;color:rgba(255,255,255,0.6);font-weight:500;transition:all .3s var(--spring);cursor:default}
+.tag:hover{background:rgba(132,187,65,0.15);border-color:rgba(132,187,65,0.3);color:var(--green-l)}
+.s3-hint{margin-top:1.5rem;font-size:.78rem;color:rgba(255,255,255,0.25);letter-spacing:.05em}
+
+/* ── S4 EXAMPLES ── */
+#s4{background:var(--altwhite);padding:4rem 4vw 7rem;justify-content:center}
+.s4-head{margin-bottom:2rem;max-width:100%}
+.s4-title{font-family:'Outfit',sans-serif;font-size:clamp(1.4rem,2.8vw,2.4rem);font-weight:800;letter-spacing:-.025em;color:var(--blue);white-space:nowrap}
+.s4-title span{color:var(--green)}
+.s4-sub{font-size:.9rem;color:var(--muted);margin-top:.5rem;white-space:nowrap}
+.ex-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.5rem;width:100%}
+.ex-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--border);overflow:hidden;box-shadow:0 4px 28px rgba(47,61,80,0.06);transition:transform .4s var(--spring),box-shadow .4s}
+.ex-card:hover{transform:translateY(-4px);box-shadow:0 12px 48px rgba(47,61,80,0.12)}
+.ex-head{padding:1.3rem 1.5rem 1.1rem;border-bottom:1px solid rgba(47,61,80,0.07);display:flex;align-items:center;gap:.9rem}
+.ex-num{width:2.2rem;height:2.2rem;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:.88rem;font-weight:800;flex-shrink:0}
+.ex-num.g{background:var(--green);color:#fff}
+.ex-num.o{background:var(--orange);color:#fff}
+.ex-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.ex-card-title{font-size:.92rem;font-weight:700;color:var(--blue);line-height:1.3}
+.ex-body{padding:1.3rem 1.5rem}
+.ex-row{display:flex;gap:.7rem;margin-bottom:.9rem}
+.ex-row:last-child{margin-bottom:0}
+.ex-dot{width:6px;height:6px;border-radius:9999px;margin-top:.5rem;flex-shrink:0}
+.ex-dot.g{background:var(--green)}.ex-dot.o{background:var(--orange)}.ex-dot.b{background:var(--blue-m)}
+.ex-row-text strong{display:block;font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:.15rem}
+.ex-row-text span{font-size:.8rem;color:var(--muted);line-height:1.55}
+.takebar{grid-column:1/-1;background:var(--blue);border-radius:var(--r-xl);padding:1.4rem 1.8rem;display:flex;align-items:center;gap:1.1rem;box-shadow:0 10px 40px rgba(47,61,80,0.2)}
+.takebar-icon{width:2.4rem;height:2.4rem;border-radius:.65rem;background:rgba(132,187,65,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;font-weight:800;color:var(--green)}
+.takebar-text{font-size:.88rem;color:rgba(255,255,255,0.8);line-height:1.6}
+.takebar-text strong{color:var(--green-l)}
+
+/* ── S5 SPECTRUM ── */
+#s5{background:var(--offwhite);padding:4rem 5vw 7rem;justify-content:center}
+.s5-head{margin-bottom:2rem}
+.s5-title{font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.6rem);font-weight:800;letter-spacing:-.025em;color:var(--blue);white-space:nowrap}
+.s5-sub{font-size:.9rem;color:var(--muted);margin-top:.4rem;white-space:nowrap}
+.spec-wrap{width:100%}
+.spec-bar-outer{position:relative;margin-bottom:1rem;margin-top:3.5rem}
+.spec-bar{height:3rem;border-radius:9999px;background:linear-gradient(to right,#c0392b 0%,#e74c3c 12%,#e67e22 24%,#f57f20 36%,#ffb206 50%,#a8d060 62%,#84bb41 72%,#6baa2e 82%,#5a9926 90%,#4a8820 100%);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.marker{position:absolute;top:-3.5rem;left:75%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.marker-badge{background:var(--blue);color:#fff;border-radius:.5rem;padding:.3rem .7rem;font-size:.7rem;font-weight:800;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.2);letter-spacing:.03em}
+.marker-stem{width:2px;height:2.8rem;background:var(--blue)}
+.marker-dot{width:14px;height:14px;border-radius:9999px;background:var(--blue);border:3px solid #fff;box-shadow:0 0 0 2px var(--blue);margin-top:-2px}
+.spec-labels{display:flex;justify-content:space-between;margin-top:.75rem;margin-bottom:1.5rem}
+.spec-lbl{font-size:.75rem;font-weight:600}
+.spec-lbl.r{color:#c0392b}.spec-lbl.g{color:#4a8820}
+.zone-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}
+.zone{border-radius:var(--r-lg);padding:1.1rem 1.3rem;border:1.5px solid transparent;transition:transform .3s var(--spring)}
+.zone:hover{transform:translateY(-3px)}
+.zone.red{background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.15)}
+.zone.green{background:rgba(132,187,65,0.08);border-color:rgba(132,187,65,0.25)}
+.zone.gray{background:rgba(74,136,32,0.06);border-color:rgba(74,136,32,0.15)}
+.zone-badge{display:inline-block;border-radius:9999px;padding:.2rem .6rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.zbr{background:rgba(192,57,43,0.12);color:#c0392b}
+.zbg{background:rgba(132,187,65,0.15);color:var(--green-d)}
+.zbgr{background:rgba(74,136,32,0.12);color:#4a8820}
+.zone h4{font-size:.88rem;font-weight:700;color:var(--blue);margin-bottom:.35rem}
+.zone p{font-size:.78rem;color:var(--muted);line-height:1.55}
+.insight{background:var(--blue);border-radius:var(--r-xl);padding:1.4rem 1.8rem;display:grid;grid-template-columns:3px 1fr;gap:1.1rem;align-items:start;box-shadow:0 10px 40px rgba(47,61,80,0.2)}
+.insight-bar{background:var(--green);border-radius:9999px;align-self:stretch}
+.insight-text{font-size:.88rem;color:rgba(255,255,255,0.75);line-height:1.65}
+.insight-text strong{color:var(--green-l)}
+
+/* ── S6 ACTIVITY ── */
+#s6{background:var(--blue-d);padding:4rem 5vw 7rem;justify-content:center;align-items:flex-start}
+.s6-orb1{width:500px;height:500px;background:rgba(132,187,65,0.09);bottom:-100px;right:-80px}
+.s6-orb2{width:300px;height:300px;background:rgba(245,127,32,0.07);top:60px;left:60px}
+.s6-content{position:relative;z-index:2;width:100%}
+.s6-title{font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);font-weight:800;letter-spacing:-.025em;color:#fff;margin-bottom:.3rem}
+.s6-title span{color:var(--green)}
+.s6-sub{font-size:.88rem;color:rgba(255,255,255,0.4);margin-bottom:1.8rem;line-height:1.5}
+.sc-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem;width:100%}
+.sc{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-lg);padding:1.3rem 1.5rem;cursor:pointer;transition:all .35s var(--spring);position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green);transform:scaleY(0);transform-origin:bottom;transition:transform .3s var(--spring)}
+.sc:hover::before{transform:scaleY(1)}
+.sc:hover{background:rgba(255,255,255,0.08);transform:translateX(4px)}
+.sc.open{background:rgba(132,187,65,0.1);border-color:rgba(132,187,65,0.25)}
+.sc.open::before{transform:scaleY(1)}
+.sc-num{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--green);margin-bottom:.35rem}
+.sc-sit{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.45rem;line-height:1.3}
+.sc-q{font-size:.78rem;color:rgba(255,255,255,0.45);line-height:1.5}
+.sc-ans{max-height:0;overflow:hidden;padding:0 0;transition:max-height .45s var(--out),padding .35s var(--out)}
+.sc.open .sc-ans{max-height:150px;padding:.8rem 0 0;border-top:1px solid rgba(132,187,65,0.2);margin-top:.8rem}
+.sc-ans p{font-size:.8rem;color:var(--green-l);line-height:1.55}
+
+/* ── S7 LENS ── */
+#s7{background:var(--altwhite);padding:4rem 5vw 7rem;justify-content:center}
+.s7-head{margin-bottom:2rem}
+.s7-title{font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.6rem);font-weight:800;letter-spacing:-.025em;color:var(--blue)}
+.s7-title span{color:var(--green)}
+.s7-sub{font-size:.9rem;color:var(--muted);margin-top:.4rem;max-width:100%;line-height:1.6}
+.lens-wrap{width:100%}
+.q-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2rem;margin-bottom:1.2rem}
+.qc{background:#fff;border:1px solid var(--border);border-radius:var(--r-xl);overflow:hidden;box-shadow:0 4px 24px rgba(47,61,80,0.06);cursor:pointer;transition:transform .35s var(--spring),box-shadow .35s}
+.qc:hover{transform:translateY(-4px);box-shadow:0 14px 44px rgba(47,61,80,0.11)}
+.qc-bar{height:3px}
+.bar-g{background:var(--green)}.bar-o{background:var(--orange)}.bar-b{background:var(--blue-m)}
+.qc-top{padding:1.3rem 1.3rem 1.1rem;border-bottom:1px solid rgba(47,61,80,0.07);user-select:none}
+.qc-step{display:inline-flex;align-items:center;background:rgba(47,61,80,0.06);border-radius:9999px;padding:.18rem .55rem;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--blue-m);margin-bottom:.7rem}
+.qc-top h3{font-size:.85rem;font-weight:700;color:var(--blue);line-height:1.4}
+.hint{display:inline-block;margin-top:.45rem;font-size:.67rem;font-weight:600;color:var(--green-d);opacity:.55;letter-spacing:.04em;transition:opacity .2s}
+.qc-top:hover .hint{opacity:1}
+.qc.open .hint{display:none}
+.qc-bot{padding:0 1.3rem;max-height:0;overflow:hidden;transition:max-height .45s var(--out),padding .35s var(--out)}
+.qc.open .qc-bot{max-height:220px;padding:1.1rem 1.3rem;border-top:1px solid rgba(47,61,80,0.08)}
+.q-lbl{font-size:.75rem;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
+.q-exp{font-size:.82rem;color:var(--nearblack);line-height:1.6;font-style:italic}
+.ct-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem;margin-bottom:1.2rem}
+.ct{background:#fff;border:1px solid var(--border);border-radius:.85rem;padding:1rem;text-align:center;transition:transform .3s var(--spring)}
+.ct:hover{transform:translateY(-2px)}
+.ct-icon{font-size:1.3rem;margin-bottom:.35rem}
+.ct-label{font-size:.73rem;font-weight:700;color:var(--blue);margin-bottom:.2rem}
+.ct-desc{font-size:.68rem;color:var(--muted);line-height:1.45}
+.std-box{background:var(--blue);border-radius:var(--r-xl);padding:1.5rem 1.8rem;display:flex;align-items:center;gap:1.4rem;box-shadow:0 10px 40px rgba(47,61,80,0.2)}
+.std-lbl{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--green);white-space:nowrap;border-right:1px solid rgba(255,255,255,0.1);padding-right:1.4rem;flex-shrink:0}
+.std-txt{font-size:.88rem;color:rgba(255,255,255,0.75);line-height:1.6}
+.std-txt strong{color:#fff}
+
+/* ── S8 REFLECT ── */
+#s8{background:var(--blue);padding:4rem 5vw 7rem;justify-content:center;align-items:flex-start}
+.s8-orb{position:absolute;width:700px;height:700px;border-radius:9999px;background:rgba(132,187,65,0.07);filter:blur(120px);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.s8-content{position:relative;z-index:2;width:100%}
+.s8-title{font-family:'Outfit',sans-serif;font-size:clamp(1.5rem,3vw,2.6rem);font-weight:800;letter-spacing:-.025em;color:#fff;margin-bottom:.3rem}
+.s8-title span{color:var(--green)}
+.s8-sub{font-size:.88rem;color:rgba(255,255,255,0.4);margin-bottom:1.8rem;line-height:1.5}
+.p-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem;margin-bottom:1.4rem;width:100%}
+.pc{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-lg);padding:1.2rem 1.4rem;display:flex;gap:.9rem;align-items:flex-start;transition:all .35s var(--spring)}
+.pc:hover{background:rgba(255,255,255,0.07);transform:translateX(4px)}
+.pc:last-child{grid-column:1/-1}
+.pnum{width:2rem;height:2rem;border-radius:9999px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;color:#fff;flex-shrink:0}
+.ptxt{font-size:.86rem;color:rgba(255,255,255,0.7);line-height:1.6;padding-top:.15rem}
+.ptxt strong{color:rgba(255,255,255,0.9)}
+.hook{background:rgba(132,187,65,0.09);border:1px solid rgba(132,187,65,0.2);border-radius:var(--r-xl);padding:1.5rem 1.8rem;display:flex;align-items:center;gap:1.4rem;width:100%}
+.hook-bar{width:3px;background:var(--green);border-radius:9999px;align-self:stretch;flex-shrink:0}
+.hook-txt{font-size:.92rem;color:rgba(255,255,255,0.7);line-height:1.65;font-style:italic}
+.hook-txt strong{color:var(--green-l);font-style:normal}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .s2-grid{grid-template-columns:1fr}
+  .s2-left{grid-column:1;grid-row:auto}
+  .s2-right{grid-column:1;grid-row:auto}
+  .s2-drivers-row{grid-column:1;grid-template-columns:1fr}
+  .s3-grid{grid-template-columns:1fr}
+  .tags{padding-top:0}
+}
+@media(max-width:768px){
+  .ex-grid,.sc-grid,.p-grid,.q-grid,.ct-grid,.zone-cards{grid-template-columns:1fr}
+  .takebar,.std-box,.hook,.insight{flex-direction:column;align-items:flex-start}
+  .std-lbl{border-right:none;border-bottom:1px solid rgba(255,255,255,0.1);padding-right:0;padding-bottom:.6rem}
+  .s1-title,.s2-title,.s4-title,.s5-title,.s4-sub,.s5-sub{white-space:normal}
+  .pc:last-child{grid-column:1}
+  .takebar,.insight{grid-column:1}
+  #s1,#s2,#s3,#s4,#s5,#s6,#s7,#s8{padding:3.5rem 5vw 6.5rem}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- S1 TITLE -->
+<section class="slide active" id="s1">
+  <div class="s1-bar"></div>
+  <div class="orb s1-orb1"></div>
+  <div class="orb s1-orb2"></div>
+  <div style="position:relative;z-index:2">
+    <p class="s1-label fu">Operations | Frameworks</p>
+    <h1 class="s1-title fu d1">The <span>MAYA</span> Principle</h1>
+    <p class="s1-sub fu d2">The lens Greatway Operations applies before any change moves forward.</p>
+  </div>
+  <p class="s1-credit">Prepared by Marvin Colcol, Growth &amp; Innovation Coordinator &nbsp;|&nbsp; Operations &nbsp;|&nbsp; Greatway Financial Inc.</p>
+</section>
+
+<!-- S2 WHY NOW -->
+<section class="slide" id="s2">
+  <div class="s2-grid">
+    <div class="s2-left">
+      <div class="eyebrow fu">Why This Matters Now</div>
+      <h2 class="s2-title fu d1">Unmanaged change is costing us<br><span class="accent">adoption, credibility, and momentum.</span></h2>
+      <p class="s2-sub-headline fu d2">Three simultaneous forces are outpacing our current rollout approach.</p>
+      <p class="s2-body fu d3">When change is introduced without a familiar anchor, even the right idea generates resistance. MAYA is how we protect good ideas from bad rollouts -- and how we signal leadership readiness every time we present.</p>
+    </div>
+    <div class="s2-right fu d2">
+      <div class="def-card">
+        <div class="def-orb"></div>
+        <div class="def-warning">
+          <p><strong>The cost of skipping this:</strong> Meetings derail, projects stall, and credibility takes a quiet hit that delays the next opportunity.</p>
+        </div>
+        <div class="acronym-row">
+          <div><span class="al">M</span><span class="ar">ost</span></div>
+          <div><span class="al">A</span><span class="ar">dvanced</span></div>
+          <div><span class="al">Y</span><span class="ar">et</span></div>
+          <div><span class="al">A</span><span class="ar">cceptable</span></div>
+        </div>
+        <div class="def-divider"></div>
+        <p class="def-stmt">Make something as <strong>innovative as possible</strong> while keeping it <strong>familiar enough</strong> that people feel safe enough to adopt it. The goal is adoption. A change that is correct but not followed is a failed change.</p>
+      </div>
+    </div>
+    <div class="s2-drivers-row fu d4">
+      <div class="driver">
+        <div class="driver-icon ic-g">R</div>
+        <div class="driver-text">
+          <strong>Regulatory Shifts</strong>
+          <span>FSRA, PIPEDA, and provincial standards are updating faster than our internal processes can keep up.</span>
+        </div>
+      </div>
+      <div class="driver">
+        <div class="driver-icon ic-o">T</div>
+        <div class="driver-text">
+          <strong>Technology Acceleration</strong>
+          <span>New tools, AI platforms, and system migrations are now a regular operational rhythm, not an exception.</span>
+        </div>
+      </div>
+      <div class="driver">
+        <div class="driver-icon ic-b">C</div>
+        <div class="driver-text">
+          <strong>Customer &amp; Agent Behaviour</strong>
+          <span>How agents recruit, how clients decide, and what both groups expect is evolving continuously.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 ENGAGE -->
+<section class="slide" id="s3">
+  <div class="orb s3-orb1"></div>
+  <div class="orb s3-orb2"></div>
+  <div class="s3-grid">
+    <div>
+      <div class="eyebrow light fu">Before We Go Further</div>
+      <h2 class="s3-title fu d1">Think of a change you <span>resisted.</span><br>The reason it felt wrong is the same reason rollouts fail.</h2>
+      <p class="s3-body fu d2">It was not the change itself. It was the unfamiliarity of it. The same instinct that made you hesitate is the instinct your team brings to every change you introduce.</p>
+      <div class="s3-reveal-card fu d3">
+        <p>Resistance is almost never about whether the change is <strong>correct.</strong> It is about whether it feels <strong>safe enough to follow.</strong> MAYA is the gap between those two things.</p>
+      </div>
+    </div>
+    <div>
+      <div class="tags fu d2">
+        <span class="tag">An app redesign</span>
+        <span class="tag">A new tool at work</span>
+        <span class="tag">A policy update</span>
+        <span class="tag">A platform migration</span>
+        <span class="tag">A process change</span>
+        <span class="tag">A software update</span>
+        <span class="tag">A reorganization</span>
+        <span class="tag">A new requirement</span>
+      </div>
+      <p class="s3-hint fu d4">Keep your answer in mind. It is about to become evidence.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S4 EXAMPLES -->
+<section class="slide" id="s4">
+  <div class="s4-head">
+    <div class="eyebrow fu">MAYA in Action</div>
+    <h2 class="s4-title fu d1">Even the world's most powerful companies have had to submit to <span>what people already know.</span></h2>
+    <p class="s4-sub fu d2">The QWERTY keyboard and Apple's tactile bump reversal prove that correctness never beats familiarity -- adoption does.</p>
+  </div>
+  <div class="ex-grid">
+    <div class="ex-card fu d2">
+      <div class="ex-head">
+        <div class="ex-num g">1</div>
+        <div>
+          <p class="ex-label">The Keyboard You Use Right Now</p>
+          <p class="ex-card-title">QWERTY was never the best layout. It was the most familiar one.</p>
+        </div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-row">
+          <div class="ex-dot g"></div>
+          <div class="ex-row-text">
+            <strong>Built for machines, not people</strong>
+            <span>The QWERTY layout was designed around physical typewriter mechanics to prevent arm jams -- not to optimize human typing. It was never the best option. It was the most buildable one at the time.</span>
+          </div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-dot g"></div>
+          <div class="ex-row-text">
+            <strong>Why it survived</strong>
+            <span>By the time better layouts existed, hundreds of millions of people had already learned QWERTY. The familiarity was irreversible. No amount of logic could overcome what people already knew in their hands.</span>
+          </div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-dot o"></div>
+          <div class="ex-row-text">
+            <strong>Apple submitted to the same force</strong>
+            <span>Apple tried moving the tactile finger-placement bumps from F and J to D and K. Ergonomically justified. Logically sound. The market convention was too strong. They reversed course. Even Apple, with its full design authority, had to respect what people already knew.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ex-card fu d3">
+      <div class="ex-head">
+        <div class="ex-num o">2</div>
+        <div>
+          <p class="ex-label">Social Media App Updates</p>
+          <p class="ex-card-title">The same update. Two rollouts. Two completely different outcomes.</p>
+        </div>
+      </div>
+      <div class="ex-body">
+        <div class="ex-row">
+          <div class="ex-dot g"></div>
+          <div class="ex-row-text">
+            <strong>When MAYA is applied</strong>
+            <span>You barely notice the interface changed. Navigation shifted slightly. A button moved. You are already using the new features before you realize you adapted. No friction. No complaints. Adoption happens invisibly.</span>
+          </div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-dot o"></div>
+          <div class="ex-row-text">
+            <strong>When MAYA is skipped</strong>
+            <span>Users post complaints, rate the app one star, demand the old version back, and generate entire social media movements -- then keep using it anyway. The product did not break. The familiarity did.</span>
+          </div>
+        </div>
+        <div class="ex-row">
+          <div class="ex-dot b"></div>
+          <div class="ex-row-text">
+            <strong>What this proves</strong>
+            <span>Resistance is not evidence that the change was wrong. It is evidence that the rollout did not carry people across the gap between what they knew and what you were asking them to do.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="takebar fu d4">
+      <div class="takebar-icon">!</div>
+      <p class="takebar-text"><strong>What Apple proved with its effort to differentiate:</strong> MAYA is not timidity. It is strategy. Even the world's most powerful companies have had to answer to what people already know. Correctness never beats familiarity. Adoption always wins.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S5 SPECTRUM -->
+<section class="slide" id="s5">
+  <div class="s5-head">
+    <div class="eyebrow fu">The MAYA Spectrum</div>
+    <h2 class="s5-title fu d1">Most rollouts land in the resistance zone without anyone realising it.</h2>
+    <p class="s5-sub fu d2">The difference between a change that sticks and one that stalls is rarely the idea -- it is where the rollout sits on this spectrum.</p>
+  </div>
+  <div class="spec-wrap fu d2">
+    <div class="spec-bar-outer">
+      <div class="marker">
+        <div class="marker-badge">Target Zone 75 to 85%</div>
+        <div class="marker-stem"></div>
+        <div class="marker-dot"></div>
+      </div>
+      <div class="spec-bar"></div>
+    </div>
+    <div class="spec-labels">
+      <span class="spec-lbl r">0% -- No MAYA (Shock Change)</span>
+      <span class="spec-lbl g">100% -- Full MAYA (No Real Change)</span>
+    </div>
+    <div class="zone-cards fu d3">
+      <div class="zone red">
+        <span class="zone-badge zbr">0 to 40%</span>
+        <h4>Too Aggressive</h4>
+        <p>No familiar anchors. Resistance is immediate and emotional even when the change is correct and necessary. Credibility takes a hit even if the idea survives.</p>
+      </div>
+      <div class="zone green">
+        <span class="zone-badge zbg">50 to 85%</span>
+        <h4>Adoption Sweet Spot</h4>
+        <p>Enough innovation to move forward. Enough familiarity that people land with you. Mandatory changes can still hit this range with the right framing and sequencing.</p>
+      </div>
+      <div class="zone gray">
+        <span class="zone-badge zbgr">85 to 100%</span>
+        <h4>Too Cautious</h4>
+        <p>Language of change present, but actual change so diluted that no meaningful progress happens. Comfort preserved, problem preserved with it.</p>
+      </div>
+    </div>
+    <div class="insight fu d4">
+      <div class="insight-bar"></div>
+      <p class="insight-text">Not every change hits 75%. Regulatory mandates have fixed urgency. But even there, <strong>MAYA thinking reduces resistance.</strong> The spectrum is not a judgment. It is a calibration tool. Show continuity wherever it exists and you move the needle even on non-negotiable change.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S6 ACTIVITY -->
+<section class="slide" id="s6">
+  <div class="orb s6-orb1"></div>
+  <div class="orb s6-orb2"></div>
+  <div class="s6-content">
+    <div class="eyebrow light fu">Team Activity</div>
+    <h2 class="s6-title fu d1">Four rollouts. One question for each: <span>what would you have done differently?</span></h2>
+    <p class="s6-sub fu d2">Click each scenario to see how MAYA thinking changes the outcome.</p>
+    <div class="sc-grid fu d3">
+      <div class="sc" id="sc1" onclick="openSc('sc1')">
+        <p class="sc-num">Scenario 01</p>
+        <p class="sc-sit">A new digital form replaces a paper-based process. No training is provided. The launch email says: "Starting Monday, use the new system."</p>
+        <p class="sc-q">Where does this land? What is missing?</p>
+        <div class="sc-ans"><p>This lands around 20 to 30%. The rollout skipped every familiar anchor. A side-by-side comparison with the old form, even just one walkthrough session, would move this toward 65%+ with no change to the underlying requirement.</p></div>
+      </div>
+      <div class="sc" id="sc2" onclick="openSc('sc2')">
+        <p class="sc-num">Scenario 02</p>
+        <p class="sc-sit">A compliance update arrives as a 12-page PDF. Subject line: "IMPORTANT: Please read and acknowledge by Friday."</p>
+        <p class="sc-q">What does this feel like to receive? What would change the outcome?</p>
+        <div class="sc-ans"><p>The content may be mandatory but the delivery creates friction. A one-page "what changed vs. what stayed the same" summary and a brief team walkthrough would dramatically improve adoption without altering the requirement itself.</p></div>
+      </div>
+      <div class="sc" id="sc3" onclick="openSc('sc3')">
+        <p class="sc-num">Scenario 03</p>
+        <p class="sc-sit">A new project management tool is introduced with a demo, a comparison to the current process, and a two-week parallel run before full cutover.</p>
+        <p class="sc-q">What MAYA elements are present? Why does this work?</p>
+        <div class="sc-ans"><p>This sits around 75 to 80%. The parallel run and comparison are strong familiar anchors. People see continuity between old and new before they are required to let go of what they know. This is MAYA applied intentionally.</p></div>
+      </div>
+      <div class="sc" id="sc4" onclick="openSc('sc4')">
+        <p class="sc-num">Scenario 04</p>
+        <p class="sc-sit">A significant agent-facing change is tested internally for six months, then rolled out to agents framed as a "small update" to avoid alarming them.</p>
+        <p class="sc-q">Is this MAYA, or is something else happening here?</p>
+        <div class="sc-ans"><p>MAYA is about familiarity and framing -- not concealment. If the framing hides the real scope of a change, trust erodes faster than resistance ever would. MAYA works with transparency. The goal is to make change feel manageable, not invisible.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S7 LENS -->
+<section class="slide" id="s7">
+  <div class="s7-head">
+    <div class="eyebrow fu">The Ops Standard</div>
+    <h2 class="s7-title fu d1">Three questions that <span>prevent resistance before it starts.</span></h2>
+    <p class="s7-sub fu d2">Every change request that moves through Operations -- regardless of source or urgency -- passes through this lens first. These are not gates. They are the reason the right changes actually move.</p>
+  </div>
+  <div class="lens-wrap">
+    <div class="q-grid fu d2">
+      <div class="qc" onclick="openQ(this)">
+        <div class="qc-bar bar-g"></div>
+        <div class="qc-top">
+          <span class="qc-step">Question 01</span>
+          <h3>What does this replace or sit next to that the team already knows?</h3>
+          <span class="hint">Click to reveal why it matters &rarr;</span>
+        </div>
+        <div class="qc-bot">
+          <p class="q-lbl">Why it matters</p>
+          <p class="q-exp">Skipping this question is why rollouts get derailed by questions that should have been answered before the meeting. If you cannot name the familiar anchor, the change has no bridge. People will not build one themselves.</p>
+        </div>
+      </div>
+      <div class="qc" onclick="openQ(this)">
+        <div class="qc-bar bar-o"></div>
+        <div class="qc-top">
+          <span class="qc-step">Question 02</span>
+          <h3>What is the smallest familiar anchor we can connect this change to?</h3>
+          <span class="hint">Click to reveal why it matters &rarr;</span>
+        </div>
+        <div class="qc-bot">
+          <p class="q-lbl">Why it matters</p>
+          <p class="q-exp">One strong anchor outperforms five weak ones -- and it takes less time to find it than to manage the resistance it prevents. Find the thing people already trust, already do, or already understand.</p>
+        </div>
+      </div>
+      <div class="qc" onclick="openQ(this)">
+        <div class="qc-bar bar-b"></div>
+        <div class="qc-top">
+          <span class="qc-step">Question 03</span>
+          <h3>What would make this feel new but not foreign?</h3>
+          <span class="hint">Click to reveal why it matters &rarr;</span>
+        </div>
+        <div class="qc-bot">
+          <p class="q-lbl">Why it matters</p>
+          <p class="q-exp">The same change can feel like a disruption or an evolution. That choice belongs to whoever designs the rollout. MAYA is often a communication decision as much as a design one.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ct-grid fu d3">
+      <div class="ct">
+        <div class="ct-icon">&#9881;</div>
+        <p class="ct-label">New Tool</p>
+        <p class="ct-desc">Frame using familiar workflows.<br>Connect to what the team already does daily.</p>
+      </div>
+      <div class="ct">
+        <div class="ct-icon">&#128196;</div>
+        <p class="ct-label">Process Update</p>
+        <p class="ct-desc">One change at a time.<br>Build comfort before adding more layers.</p>
+      </div>
+      <div class="ct">
+        <div class="ct-icon">&#128220;</div>
+        <p class="ct-label">Policy Change</p>
+        <p class="ct-desc">Anchor to existing habits.<br>Show continuity between old and new.</p>
+      </div>
+      <div class="ct">
+        <div class="ct-icon">&#128202;</div>
+        <p class="ct-label">Regulatory Mandate</p>
+        <p class="ct-desc">Even when non-negotiable,<br>explain what stays the same.</p>
+      </div>
+    </div>
+    <div class="std-box fu d4">
+      <p class="std-lbl">The Standard</p>
+      <p class="std-txt"><strong>From this point forward, these three questions are how Greatway introduces change.</strong> Whether the request comes from a team member, a technology update, a regulatory requirement, or leadership direction -- it passes through this lens before it moves. This is not a filter for slowing things down. It is the reason the right changes actually stick.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S8 REFLECT -->
+<section class="slide" id="s8">
+  <div class="s8-orb"></div>
+  <div class="s8-content">
+    <div class="eyebrow light fu">Explore It Yourself</div>
+    <h2 class="s8-title fu d1">The next change you introduce <span>will be judged on this.</span></h2>
+    <p class="s8-sub fu d2">Five questions to close the gap between knowing MAYA and applying it.</p>
+    <div class="p-grid fu d2">
+      <div class="pc">
+        <div class="pnum">1</div>
+        <p class="ptxt">Think of a change you resisted at work. <strong>What made it feel too unfamiliar</strong> -- and what would have made it easier to accept?</p>
+      </div>
+      <div class="pc">
+        <div class="pnum">2</div>
+        <p class="ptxt">Recall a tool or update you adopted quickly. <strong>What made the transition feel natural?</strong> Was MAYA at work without anyone naming it?</p>
+      </div>
+      <div class="pc">
+        <div class="pnum">3</div>
+        <p class="ptxt">If you were rolling out a new workflow today, <strong>what familiar anchor</strong> would you use to introduce it -- and how would you frame the rollout?</p>
+      </div>
+      <div class="pc">
+        <div class="pnum">4</div>
+        <p class="ptxt"><strong>Think of a change coming to your team in the next 90 days.</strong> What familiar anchor could make it land better, before the rollout even begins?</p>
+      </div>
+      <div class="pc">
+        <div class="pnum">5</div>
+        <p class="ptxt">If you had to introduce a change today with <strong>zero resistance</strong>, what would that rollout look like -- and how close are we to that right now?</p>
+      </div>
+    </div>
+    <div class="hook fu d4">
+      <div class="hook-bar"></div>
+      <p class="hook-txt">MAYA is not a filter for slowing things down. It is the reason <strong>the right changes actually stick.</strong> The question for every one of us is not whether change is coming. It is whether we are ready to carry it in a way people can follow. <strong>What is the next one you are carrying?</strong></p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- NAV -->
+<nav class="nav-pill">
+  <button class="nav-btn prev" id="prevBtn" onclick="go(-1)" disabled>&#8592;</button>
+  <div class="dots" id="dots"></div>
+  <span class="nav-counter" id="ctr">1 / 8</span>
+  <button class="nav-btn next" id="nextBtn" onclick="go(1)">&#8594;</button>
+</nav>
+
+<script>
+const TOTAL=8;let cur=1;
+const dotsEl=document.getElementById('dots');
+for(let i=1;i<=TOTAL;i++){const d=document.createElement('div');d.className='dot'+(i===1?' active':'');d.id='d'+i;dotsEl.appendChild(d);}
+
+function show(n){
+  document.querySelector('.slide.active')?.classList.remove('active');
+  document.getElementById('d'+cur)?.classList.remove('active');
+  cur=n;
+  const s=document.getElementById('s'+cur);
+  s.classList.add('active');
+  document.getElementById('d'+cur)?.classList.add('active');
+  document.getElementById('ctr').textContent=cur+' / '+TOTAL;
+  document.getElementById('prevBtn').disabled=cur===1;
+  document.getElementById('nextBtn').disabled=cur===TOTAL;
+  setTimeout(()=>{s.querySelectorAll('.fu').forEach(el=>el.classList.add('show'))},60);
+}
+function go(d){const n=cur+d;if(n<1||n>TOTAL)return;show(n);}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')go(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(-1);
+});
+let tx=0;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});
+document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)go(d>0?1:-1);});
+
+function openSc(id){
+  const c=document.getElementById(id);
+  if(c.classList.contains('open'))return;
+  c.classList.add('open');
+}
+function openQ(el){el.classList.toggle('open');}
+
+setTimeout(()=>{document.getElementById('s1').querySelectorAll('.fu').forEach(el=>el.classList.add('show'));},150);
+</script>
+</body>
+</html>
